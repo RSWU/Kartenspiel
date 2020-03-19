@@ -23,6 +23,7 @@
 		<script>
 		<!-- Hier wird die Karte zentriert -->
 			var treffpunkte_karte;
+			var old_position;
 			var data = `52.492766002516056 13.465489959324115 Treffpunkt.png 
 				52.49062333092905 13.469953155124896 Treffpunkt.png 
 				52.48612860747615 13.48085365256142 Treffpunkt.png 
@@ -41,6 +42,10 @@
 				else {
 					alert("Geolocation doesn't work in your browser");
 				}
+				old_position=new google.maps.Marker({
+					position: {lat: 52.488300247639756 , lng: 13.472178361395102}  ,
+					map: treffpunkte_karte
+				});
 				for(var i=0; i < markers.length; i++){
 					var marker_data = markers[i].trim();
 					marker_data = marker_data.split(" ");
@@ -61,13 +66,16 @@
 				});
 				
 			}
+			
 			function set_my_position(position ){
+				old_position.setMap(null);
 				var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 				var AktuellePos = new google.maps.Marker({
-						position: pos ,
-						map: treffpunkte_karte,
-						icon: "Student.png"
-					});
+					position: pos ,
+					map: treffpunkte_karte,
+					icon: "Student.png"
+				});
+				old_position=AktuellePos;
 			}
 			<!-- Hier wird der Marker gesetzt -->
 			function SetzeTreffpunkt(location){

@@ -39,7 +39,7 @@
 					center: {lat: 52.488300247639756 , lng: 13.472178361395102} 
 				});
 				if(navigator.geolocation) {
-					navigator.geolocation.watchPosition(set_my_position);
+					navigator.geolocation.watchPosition(setze_meine_position);
 				}
 				else {
 					alert("Geolocation doesn't work in your browser");
@@ -87,6 +87,7 @@
 						alert("Du hast das Ziel " + what_is_it + " erreicht");
 						alle_Treffpunkte[i].setMap(null);
 					}
+				}
 			}
 			<!-- Hier wird der Marker gesetzt -->
 			function SetzeTreffpunkt(location){

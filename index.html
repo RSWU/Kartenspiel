@@ -23,14 +23,16 @@
 		<script>
 		<!-- Hier wird die Karte zentriert -->
 			var treffpunkte_karte;
+			var toleranz;
 			var old_position;
+			var alle_Treffpunkte=[];
 			var data = `52.492766002516056 13.465489959324115 Treffpunkt.png 
 				52.49062333092905 13.469953155124896 Treffpunkt.png 
 				52.48612860747615 13.48085365256142 Treffpunkt.png 
 				52.48479760942334 13.473406339441269 Treffpunkt.png
 				52.48782907669939 13.465693321909725 Treffpunkt.png
 				52.49221910719 13.46131595679742 Treffpunkt.png`;
-			var markers = data.split("\n");
+			var fertigeTreffpunkte = data.split("\n");
 			function initMap() {
 				treffpunkte_karte = new google.maps.Map(document.getElementById('treffpunkte_karte'), {
 					zoom: 15,
@@ -46,19 +48,20 @@
 					position: {lat: 52.488300247639756 , lng: 13.472178361395102}  ,
 					map: treffpunkte_karte
 				});
-				for(var i=0; i < markers.length; i++){
-					var marker_data = markers[i].trim();
-					marker_data = marker_data.split(" ");
-					var latitude = marker_data[0];
-					var longitude = marker_data[1];
-					var emoji = marker_data[2];
-					var marker_position = new google.maps.LatLng(latitude, longitude);
+				for(var i=0; i < fertigeTreffpunkte.length; i++){
+					var Treffpunkt_data = fertigeTreffpunkte[i].trim();
+					Treffpunkt_data = Treffpunkt_data.split(" ");
+					var latitude = Treffpunkt_data[0];
+					var longitude = Treffpunkt_data[1];
+					var emoji = Treffpunkt_data[2];
+					var Treffpunkt_position = new google.maps.LatLng(latitude, longitude);
 					var Treffpunkt = new google.maps.Marker({
-						position: marker_position ,
+						position: Treffpunkt_position ,
 						map: treffpunkte_karte,
 						icon: emoji
 					}); 
-					console.log("Die vorgegebene position:	" + marker_position.lat() +" " + marker_position.lng() + " " + emoji);
+					alle_Treffpunkte.push(Treffpunkt);
+					console.log("Die vorgegebene position:	" + Treffpunkt_position.lat() +" " + Treffpunkt_position.lng() + " " + emoji);
 				}
 				treffpunkte_karte.addListener('click', function(e) {
 					var location = e.latLng;
@@ -67,7 +70,7 @@
 				
 			}
 			
-			function set_my_position(position ){
+			function setze_meine_position(position){
 				old_position.setMap(null);
 				var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 				var AktuellePos = new google.maps.Marker({
@@ -75,7 +78,15 @@
 					map: treffpunkte_karte,
 					icon: "Student.png"
 				});
-				old_position=AktuellePos;
+				alte_position=AktuellePos;
+				for(var i=0;i<fertigeTreffpunkte.length;i++){
+					var distance = google.maps.geometry.spherical.computeDistanceBetween(pos,alle_Treffpunkte[i].getPosition());
+					if( distance < tolerance ){
+						var what_is_it = alle_Treffpunkte[i].getIcon();
+						what_is_it = what_is_it.replace(".png", "");
+						alert("Du hast das Ziel " + what_is_it + " erreicht");
+						alle_Treffpunkte[i].setMap(null);
+					}
 			}
 			<!-- Hier wird der Marker gesetzt -->
 			function SetzeTreffpunkt(location){
@@ -90,7 +101,7 @@
 		</script>
 	<!-- Hier wird der Marker gesetzt -->
 		<script async defer
-			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH0y3IY9uVMFPJbE6UcDH35vYUlxo573Y&callback=initMap">
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH0y3IY9uVMFPJbE6UcDH35vYUlxo573Y&callback=initMap&libraries=geometry">
 		</script>
 	</body>
 </html>
